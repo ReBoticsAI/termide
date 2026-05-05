@@ -220,6 +220,22 @@ impl EventHandler {
             }
         }
 
+        // Under CPU load, queued keystrokes can arrive in bursts that look
+        // like paste. Require a minimum character count to avoid false
+        // positives — real pastes are almost always longer than a few chars.
+        if text.len() < 4 {
+            // Re-emit as individual key events
+            let mut chars = text.chars();
+            chars.next(); // skip first_ch — we return it below
+            for ch in chars {
+                self.pending_events.borrow_mut().push_back(Event::Key(KeyEvent::new(
+                    KeyCode::Char(ch),
+                    first_key.modifiers,
+                )));
+            }
+            return Ok(Event::Key(first_key));
+        }
+
         Ok(Event::Paste(text))
     }
 

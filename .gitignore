@@ -31,3 +31,5 @@ termide.log
 /coverage/
 *.profdata
 *.profraw
+
+session.toml
