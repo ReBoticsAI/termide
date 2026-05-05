@@ -190,6 +190,7 @@ impl EventHandler {
         // Only coalesce plain character events (Shift is OK for uppercase)
         if first_key.modifiers.contains(KeyModifiers::CONTROL)
             || first_key.modifiers.contains(KeyModifiers::ALT)
+            || first_key.modifiers.contains(KeyModifiers::SUPER)
         {
             return Ok(Event::Key(first_key));
         }
@@ -247,7 +248,8 @@ impl EventHandler {
                 CrosstermEvent::Key(key)
                     if key.kind == KeyEventKind::Press
                         && !key.modifiers.contains(KeyModifiers::CONTROL)
-                        && !key.modifiers.contains(KeyModifiers::ALT) =>
+                        && !key.modifiers.contains(KeyModifiers::ALT)
+                        && !key.modifiers.contains(KeyModifiers::SUPER) =>
                 {
                     match key.code {
                         KeyCode::Char(c) => text.push(c),
